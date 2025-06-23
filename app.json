@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "kankor_exam",
+    "name": "درس پرس",
     "slug": "kankor_exam",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -33,7 +33,8 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
