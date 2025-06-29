@@ -8,7 +8,7 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const { buildHref } = useLinkBuilder();
 
   return (
-    <View className="flex-row w-full absolute bottom-0 bg-white p-2 rounded-t-3xl justify-between px-4 items-center">
+    <View className="flex-row w-full absolute bottom-0 bg-white p-2 rounded-t-3xl justify-around px-4 items-center">
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         // const label =

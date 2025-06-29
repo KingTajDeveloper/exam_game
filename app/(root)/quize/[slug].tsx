@@ -1,21 +1,26 @@
-// import { useSearchParams } from "expo-router/build/hooks";
+import ExamSetupScreen from "@/components/quize/ExamSetupScreen";
+import QuizeScreen from "@/components/quize/QuizeScreen";
+import { SubjectList } from "@/config/config";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
-import { Text, View } from "react-native";
+import { useSelector } from "react-redux";
 
-const Page = () => {
+const ExamScreen = () => {
   const params = useLocalSearchParams();
-  const subject = params?.slug;
+  const subjectValue = params?.slug;
 
-  // const data = require(`@/questions/${subject}/11.json`);
-
-  // console.log(data);
+  const subject = SubjectList.find((item) => item?.value == subjectValue);
+  const selector = useSelector((store) => store.questions);
+  console.log(subject);
 
   return (
-    <View>
-      <Text>{params?.slug}</Text>
-    </View>
+    <>
+      {selector?.quizStatus === "not_started" && (
+        <ExamSetupScreen subject={subject} />
+      )}
+      {selector?.quizStatus === "started" && <QuizeScreen subject={subject} />}
+    </>
   );
 };
 
-export default Page;
+export default ExamScreen;

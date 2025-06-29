@@ -26,15 +26,7 @@ export const questionsSlice = createSlice({
   reducers: {
     loadQuestions: (state, action) => {
       state.questions = action.payload;
-    },
-    startQuize: (state) => {
       state.quizStatus = "started";
-    },
-    nextQuestoin: (state) => {
-      state.currentQuestionIndex += 1;
-    },
-    updateScore: (state, action) => {
-      state.score += action.payload;
     },
     resetQuize: (state, action) => {
       Object.assign(state, initialState);
@@ -42,6 +34,6 @@ export const questionsSlice = createSlice({
   },
 });
 
-export const { loadQuestions } = questionsSlice.actions;
+export const { loadQuestions, resetQuize } = questionsSlice.actions;
 
 export default questionsSlice.reducer;

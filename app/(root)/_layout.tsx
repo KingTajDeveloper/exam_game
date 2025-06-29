@@ -1,5 +1,5 @@
 import { TabBar } from "@/components/TabBar";
-import { addProfile } from "@/redux/slice/profileSlice";
+import { addCategory, addProfile } from "@/redux/slice/profileSlice";
 import { getFromSecureStore } from "@/utils/secureStore";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
@@ -17,6 +17,12 @@ const Layout = () => {
       console.log(data);
     }
   });
+  getFromSecureStore("category").then((data) => {
+    if (data) {
+      dispatch(addCategory(data));
+      console.log("category------------------------------------------", data);
+    }
+  });
 
   return (
     <SafeAreaView className="flex-1">
@@ -25,6 +31,7 @@ const Layout = () => {
           name="index"
           options={{
             title: "صفحه اصلی",
+            headerShown: false,
             tabBarIcon: ({ focused }: { focused: boolean }) => {
               return (
                 <TabButton
@@ -56,7 +63,7 @@ const Layout = () => {
             },
           }}
         />
-        <Tabs.Screen
+        {/* <Tabs.Screen
           name="rank"
           options={{
             headerShown: false,
@@ -72,7 +79,7 @@ const Layout = () => {
               );
             },
           }}
-        />
+        /> */}
         <Tabs.Screen
           name="profile"
           options={{

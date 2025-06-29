@@ -9,6 +9,7 @@ export interface ProfileState {
   total_coin: number;
   active_borders: number[];
   active_avatar: number[];
+  category: object[];
 }
 
 const initialState: ProfileState = {
@@ -20,6 +21,7 @@ const initialState: ProfileState = {
   total_coin: 200000,
   active_borders: [1],
   active_avatar: [1],
+  category: [{ name: "", quize: [] }],
 };
 
 export const profileSlice = createSlice({
@@ -28,6 +30,9 @@ export const profileSlice = createSlice({
   reducers: {
     addProfile: (state, action) => {
       Object.assign(state, action.payload);
+    },
+    addCategory: (state, action) => {
+      state.category = action.payload;
     },
     addBorderId: (state, action: PayloadAction<number>) => {
       state.border_id = action.payload;
@@ -53,6 +58,7 @@ export const profileSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const {
   addProfile,
+  addCategory,
   addBorderId,
   addAvatarId,
   addTotalCoin,
