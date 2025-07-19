@@ -9,7 +9,7 @@ const ExamScreen = () => {
   const params = useLocalSearchParams();
   const subjectValue = params?.slug;
 
-  const subject = SubjectList.find((item) => item?.value == subjectValue);
+  const subject = SubjectList.find((item) => item?.value === subjectValue);
   const selector = useSelector((store) => store.questions);
   console.log(subject);
 

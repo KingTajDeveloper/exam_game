@@ -14,13 +14,12 @@ const Layout = () => {
   getFromSecureStore("profile").then((data) => {
     if (data) {
       dispatch(addProfile(data));
-      console.log(data);
+      console.log("profile**************************************", data);
     }
   });
   getFromSecureStore("category").then((data) => {
     if (data) {
       dispatch(addCategory(data));
-      console.log("category------------------------------------------", data);
     }
   });
 

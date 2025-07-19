@@ -16,25 +16,34 @@ import {
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import { useDispatch } from "react-redux";
 
+
+type QuestionsMap = {
+  [grade: string]: any[]; 
+};
+
+function shuffleArray<T>(array: T[]): T[] {
+  return [...array].sort(() => Math.random() - 0.5);
+}
+
 const ExamSetupScreen = ({
   subject,
 }: {
   subject: subjectItemType | undefined;
 }) => {
   const dispatch = useDispatch();
-  const [selectedGrade, setSelectedGrade] = useState(null);
-  const [questionCount, setQuestionCount] = useState("10");
-  const [customCount, setCustomCount] = useState("");
-  const [questoins, setQuestoins] = useState({});
+  const [selectedGrade, setSelectedGrade] = useState<string | null>(null);
+  const [questionCount, setQuestionCount] = useState<string>("10");
+  const [customCount, setCustomCount] = useState<string>("");
+  const [questoins, setQuestoins] = useState<QuestionsMap>({});
   const questionsSubject = getQuestions(subject?.value);
 
   useEffect(() => {
     setQuestoins({
-      "10": questionsSubject?.["10"],
-      "11": questionsSubject?.["11"],
-      "12": questionsSubject?.["12"],
+      "10": questionsSubject?.["10"] ?? [],
+      "11": questionsSubject?.["11"] ?? [],
+      "12": questionsSubject?.["12"] ?? [],
     });
-  }, []);
+  }, [questionsSubject]);
 
   const gradeOptions = [
     { id: "10", name: "صنف ۱۰" },
@@ -46,19 +55,31 @@ const ExamSetupScreen = ({
   const countOptions = ["10", "20", "30", "40", "custom"];
 
   const handleStartExam = () => {
-    const finalCount = questionCount === "custom" ? customCount : questionCount;
-    const MyQuestions = questionReturnHandler(
+    const finalCount =
+      questionCount === "custom" ? Number(customCount) : Number(questionCount);
+
+    const allQuestions = questionReturnHandler(
       selectedGrade,
       finalCount,
       questoins
     );
-    if (MyQuestions.length) {
-      dispatch(loadQuestions(MyQuestions));
+
+    // Randomize the questions
+    const randomQuestions = shuffleArray(allQuestions).slice(0, finalCount);
+
+    if (randomQuestions.length) {
+      dispatch(loadQuestions(randomQuestions));
     }
   };
 
+  const isStartEnabled =
+    selectedGrade &&
+    ((questionCount !== "custom" && Number(questionCount) > 0) ||
+      (questionCount === "custom" && Number(customCount) > 0));
+
   return (
     <ScrollView className="flex-1 bg-gray-50 p-4">
+      {/* عنوان و تصویر */}
       <Animated.View
         entering={FadeInDown.duration(500)}
         className="items-center mb-6"
@@ -69,6 +90,7 @@ const ExamSetupScreen = ({
         </Text>
       </Animated.View>
 
+      {/* انتخاب تعداد سوال */}
       <Animated.View
         entering={FadeIn.delay(200).duration(500)}
         className="mb-8"
@@ -100,6 +122,7 @@ const ExamSetupScreen = ({
           ))}
         </View>
 
+        {/* ورودی سفارشی */}
         {questionCount === "custom" && (
           <Animated.View entering={FadeIn.duration(300)} className="mt-2">
             <TextInput
@@ -114,6 +137,7 @@ const ExamSetupScreen = ({
         )}
       </Animated.View>
 
+      {/* انتخاب صنف */}
       <Animated.View
         entering={FadeIn.delay(100).duration(500)}
         className="mb-8"
@@ -146,19 +170,16 @@ const ExamSetupScreen = ({
         </View>
       </Animated.View>
 
+      {/* دکمه شروع امتحان */}
       <Animated.View
-        className={"mb-28 my-auto flex-1"}
+        className="mb-28 my-auto flex-1"
         entering={FadeIn.delay(500).duration(500)}
       >
         <TouchableOpacity
           className={`py-3 rounded-xl flex-row items-center justify-center ${
-            selectedGrade && (questionCount !== "custom" || customCount)
-              ? "bg-indigo-500"
-              : "bg-gray-300"
+            isStartEnabled ? "bg-indigo-500" : "bg-gray-300"
           }`}
-          disabled={
-            !selectedGrade || (questionCount === "custom" && !customCount)
-          }
+          disabled={!isStartEnabled}
           onPress={handleStartExam}
         >
           <Text className="text-white text-lg font-semibold ml-2">

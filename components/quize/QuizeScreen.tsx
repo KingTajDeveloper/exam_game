@@ -1,4 +1,5 @@
 import { subjectItemType } from "@/config/config";
+import { addCategory, addTotalCoin } from "@/redux/slice/profileSlice";
 import { resetQuize } from "@/redux/slice/quistionSlice";
 import { saveToSecureStore } from "@/utils/secureStore";
 import React, { useEffect, useState } from "react";
@@ -75,6 +76,46 @@ const QuizeScreen = ({ subject }: { subject: subjectItemType | undefined }) => {
     }, 1500);
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (!quizCompleted || !subject) return;
+
+    const percentage = Math.round((score / quizData.length) * 100);
+    const category = Array.isArray(profile?.category) ? profile.category : [];
+    const categorySelect = category?.find(
+      (item: any) => item?.name === subject?.category
+    );
+
+    const filteredCategories = category.filter(
+      (item: any) => item?.name !== subject?.category
+    );
+
+    const updatedCategory = [
+      ...filteredCategories,
+      {
+        name: subject?.category,
+        quize: [
+          ...(categorySelect?.quize ?? []),
+          {
+            quizeName: subject?.title,
+            percentage,
+            questionsCount: score,
+          },
+        ],
+      },
+    ];
+
+    saveToSecureStore("category", updatedCategory).then(() =>
+      console.log("ذخیره موفقانه انجام شد ✅")
+    );
+    saveToSecureStore("profile", {
+      ...profile,
+      total_coin: profile.total_coin + coine,
+    }).then(() => console.log("ذخیره موفقانه انجام شد ✅"));
+
+    dispatch(addCategory(updatedCategory));
+    dispatch(addTotalCoin(coine));
+  }, [quizCompleted]);
 
   const handleOptionPress = (optionIndex) => {
     if (selectedOption !== null) return;
@@ -173,21 +214,6 @@ const QuizeScreen = ({ subject }: { subject: subjectItemType | undefined }) => {
 
   if (quizCompleted) {
     const percentage = Math.round((score / quizData.length) * 100);
-
-    const categorySelect = profile.category.find(
-      (item) => item?.name == subject?.category
-    );
-    saveToSecureStore("category", [
-      ...profile.category,
-
-      {
-        name: subject?.category,
-        quize: [
-          ...(categorySelect?.quize ?? []),
-          { quizeName: subject?.title, percentage, questionsCount: score },
-        ],
-      },
-    ]).then(() => console.log("کامیاب"));
 
     let feedback = "";
     if (percentage === 100) {

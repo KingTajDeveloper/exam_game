@@ -1,4 +1,4 @@
-import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const saveToSecureStore = async (
   key: string,
@@ -6,7 +6,7 @@ export const saveToSecureStore = async (
 ) => {
   try {
     const jsonValue = JSON.stringify(item);
-    await SecureStore.setItemAsync(key, jsonValue);
+    await AsyncStorage.setItem("my-key", jsonValue);
   } catch (error) {
     console.error("خطا در ذخیره‌سازی:", error);
   }
@@ -14,7 +14,7 @@ export const saveToSecureStore = async (
 
 export const deleteSecureStore = async (key: string) => {
   try {
-    await SecureStore.deleteItemAsync(key);
+    await AsyncStorage.clear();
   } catch (error) {
     console.error("خطا در ذخیره‌سازی:", error);
   }
@@ -22,7 +22,7 @@ export const deleteSecureStore = async (key: string) => {
 
 export const getFromSecureStore = async (key: string): Promise<any> => {
   try {
-    const jsonValue = await SecureStore.getItemAsync(key);
+    const jsonValue = await AsyncStorage.getItem("my-key");
     return jsonValue != null ? JSON.parse(jsonValue) : null;
   } catch (error) {
     console.error("خطا در خواندن داده:", error);
